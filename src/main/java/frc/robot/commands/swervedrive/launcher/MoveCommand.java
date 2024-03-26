@@ -12,8 +12,10 @@ import frc.robot.subsystems.DriveSubsystem;
 public class MoveCommand extends Command 
 {
 
-  CommandXboxController driverXbox;
-  DriveSubsystem driveSubsystem;
+  private CommandXboxController driverXbox;
+  private DriveSubsystem driveSubsystem;
+  private boolean fieldRelative = true;
+
   /**
    * Command for intaking notes
    *
@@ -30,21 +32,21 @@ public class MoveCommand extends Command
   @Override
   public void execute() {
     if (driverXbox.povLeft().getAsBoolean()) {
-      driveSubsystem.drive(0, .2, -MathUtil.applyDeadband(driverXbox.getRightX(), OIConstants.kDriveDeadband), false, true);
+      driveSubsystem.drive(0, .2, -MathUtil.applyDeadband(driverXbox.getRightX(), OIConstants.kDriveDeadband), fieldRelative, true);
     } else if (driverXbox.povRight().getAsBoolean()) {
-      driveSubsystem.drive(0, -.2, -MathUtil.applyDeadband(driverXbox.getRightX(), OIConstants.kDriveDeadband), false, true);
+      driveSubsystem.drive(0, -.2, -MathUtil.applyDeadband(driverXbox.getRightX(), OIConstants.kDriveDeadband), fieldRelative, true);
     } else if (driverXbox.povUp().getAsBoolean()) {
-      driveSubsystem.drive(.2, 0, -MathUtil.applyDeadband(driverXbox.getRightX(), OIConstants.kDriveDeadband), false, true);
+      driveSubsystem.drive(.2, 0, -MathUtil.applyDeadband(driverXbox.getRightX(), OIConstants.kDriveDeadband), fieldRelative, true);
     } else if (driverXbox.povDown().getAsBoolean()) {
-      driveSubsystem.drive(-0.2, 0, -MathUtil.applyDeadband(driverXbox.getRightX(), OIConstants.kDriveDeadband), false, true);
+      driveSubsystem.drive(-0.2, 0, -MathUtil.applyDeadband(driverXbox.getRightX(), OIConstants.kDriveDeadband), fieldRelative, true);
     } else if (driverXbox.povUpLeft().getAsBoolean()) {
-      driveSubsystem.drive(.14, .14, -MathUtil.applyDeadband(driverXbox.getRightX(), OIConstants.kDriveDeadband), false, true);
+      driveSubsystem.drive(.14, .14, -MathUtil.applyDeadband(driverXbox.getRightX(), OIConstants.kDriveDeadband), fieldRelative, true);
     } else if (driverXbox.povUpRight().getAsBoolean()) {
-      driveSubsystem.drive(.14, -.14, -MathUtil.applyDeadband(driverXbox.getRightX(), OIConstants.kDriveDeadband), false, true);
+      driveSubsystem.drive(.14, -.14, -MathUtil.applyDeadband(driverXbox.getRightX(), OIConstants.kDriveDeadband), fieldRelative, true);
     } else if (driverXbox.povDownLeft().getAsBoolean()) {
-      driveSubsystem.drive(-.14, .14, -MathUtil.applyDeadband(driverXbox.getRightX(), OIConstants.kDriveDeadband), false, true);
+      driveSubsystem.drive(-.14, .14, -MathUtil.applyDeadband(driverXbox.getRightX(), OIConstants.kDriveDeadband), fieldRelative, true);
     } else if (driverXbox.povDownRight().getAsBoolean()) {
-      driveSubsystem.drive(-.14, -.14, -MathUtil.applyDeadband(driverXbox.getRightX(), OIConstants.kDriveDeadband), false, true);
+      driveSubsystem.drive(-.14, -.14, -MathUtil.applyDeadband(driverXbox.getRightX(), OIConstants.kDriveDeadband), fieldRelative, true);
     } else {
       double yMovement = driverXbox.getLeftY();
       double xMovement = driverXbox.getLeftX();
@@ -58,11 +60,20 @@ public class MoveCommand extends Command
     }
   }
   
-    @Override
-    public boolean isFinished()
-    {
-      return false;
-    }
+  @Override
+  public boolean isFinished()
+  {
+    return false;
+  }
+
+  public boolean getFieldReletive() {
+    return this.fieldRelative;
+  }
+
+  public void toggleFieldReletive() {
+    this.fieldRelative = !this.fieldRelative;
+  }
+  
 }
 
 

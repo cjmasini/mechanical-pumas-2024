@@ -6,7 +6,9 @@ package frc.robot;
 
 
 import edu.wpi.first.wpilibj.Ultrasonic;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.swervedrive.launcher.AmpCommand;
 import frc.robot.commands.swervedrive.launcher.AutonomousCommand;
@@ -45,8 +47,6 @@ public class RobotContainer
 
   private final Ultrasonic ultrasonicSensor = new Ultrasonic(PING_CHANNEL, ECHO_CHANNEL);
 
-  private boolean invertedDrive = true;
-
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -58,11 +58,10 @@ public class RobotContainer
     IntakeCommand intakeCommand = new IntakeCommand(launcherSubsystem, ultrasonicDistance);
     driverXbox.rightBumper().onTrue(intakeCommand.withTimeout(10));
 
-    AmpCommand ampCommand = new AmpCommand(launcherSubsystem, .75);
+    double launchSpeed = .75;
+    SmartDashboard.putNumber("launchSpeed", launchSpeed);
+    AmpCommand ampCommand = new AmpCommand(launcherSubsystem, launchSpeed);
     driverXbox.leftBumper().onTrue(ampCommand.withTimeout(10));
-
-    AmpCommand ampCommand2 = new AmpCommand(launcherSubsystem, .65);
-    driverXbox.y().onTrue(ampCommand2.withTimeout(10));
 
     LowerCommand lowerCommand = new LowerCommand(launcherSubsystem);
     driverXbox.a().onTrue(lowerCommand.withTimeout(10));
@@ -79,8 +78,11 @@ public class RobotContainer
     ReverseCommand reverseCommand = new ReverseCommand(launcherSubsystem);
     driverXbox.b().onTrue(reverseCommand.withTimeout(10));
 
-     // Configure default commands
-     m_robotDrive.setDefaultCommand(new MoveCommand(m_robotDrive, driverXbox));
+     MoveCommand moveCommand = new MoveCommand(m_robotDrive, driverXbox);
+     m_robotDrive.setDefaultCommand(moveCommand);
+
+     InstantCommand toggleFieldReletive = new InstantCommand(() -> moveCommand.toggleFieldReletive());
+     driverXbox.y().onTrue(toggleFieldReletive);
   }
   
   public Command getAutonomousCommand() {
