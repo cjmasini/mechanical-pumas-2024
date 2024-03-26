@@ -1,9 +1,7 @@
 package frc.robot.commands.swervedrive.launcher;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.launcher.LauncherSubsystem;
 
 /**
  * Command for note intake
@@ -12,10 +10,6 @@ public class AutonomousCommand extends Command
 {
 
   private final DriveSubsystem driveSubsystem;
-  private double time;
-
-
-  private boolean ampLaunchFinished = true;
   
   /**
    * Command for intaking notes

@@ -12,7 +12,7 @@ public class CancelCommand extends Command
 {
 
   private final LauncherSubsystem launcher;
-  private final DoubleSupplier d;  
+  private final DoubleSupplier doubleSupplier;  
 
   /**
    * Cancel all launcher mechanisms
@@ -20,11 +20,11 @@ public class CancelCommand extends Command
    * @param launcher  The launcher subsystem.
    * @param ultrasonicDistance Distance from sensor to note in mm
    */
-  public CancelCommand(LauncherSubsystem launcher, DoubleSupplier d)
+  public CancelCommand(LauncherSubsystem launcher, DoubleSupplier doubleSupplier)
   {
 
     this.launcher = launcher;
-    this.d = d;
+    this.doubleSupplier = doubleSupplier;
 
     addRequirements(launcher);
   }
@@ -39,7 +39,7 @@ public class CancelCommand extends Command
   {
 
     this.launcher = launcher;
-    this.d = null;
+    this.doubleSupplier = null;
     addRequirements(launcher);
   }
 
@@ -52,6 +52,7 @@ public class CancelCommand extends Command
     this.launcher.setLaunchSpeed(0);
     this.launcher.setLeftElevatorSpeed(0);
     this.launcher.setRightElevatorSpeed(0);
+    System.out.println(doubleSupplier.getAsDouble());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
