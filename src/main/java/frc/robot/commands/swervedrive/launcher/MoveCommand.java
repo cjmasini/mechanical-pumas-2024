@@ -1,0 +1,69 @@
+package frc.robot.commands.swervedrive.launcher;
+
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Constants.OIConstants;
+import frc.robot.subsystems.DriveSubsystem;
+
+/**
+ * Command for note intake
+ */
+public class MoveCommand extends Command 
+{
+
+  CommandXboxController driverXbox;
+  DriveSubsystem driveSubsystem;
+  /**
+   * Command for intaking notes
+   *
+   * @param launcher  The launcher subsystem.
+   * @param ultrasonicDistance Distance from sensor to note in mm
+   */
+  public MoveCommand(DriveSubsystem driveSubsystem, CommandXboxController driverXbox)
+  {
+      this.driveSubsystem = driveSubsystem;
+      this.driverXbox = driverXbox;
+      addRequirements(this.driveSubsystem);
+  }
+
+  @Override
+  public void execute() {
+    if (driverXbox.povLeft().getAsBoolean()) {
+      driveSubsystem.drive(0, .2, -MathUtil.applyDeadband(driverXbox.getRightX(), OIConstants.kDriveDeadband), false, true);
+    } else if (driverXbox.povRight().getAsBoolean()) {
+      driveSubsystem.drive(0, -.2, -MathUtil.applyDeadband(driverXbox.getRightX(), OIConstants.kDriveDeadband), false, true);
+    } else if (driverXbox.povUp().getAsBoolean()) {
+      driveSubsystem.drive(.2, 0, -MathUtil.applyDeadband(driverXbox.getRightX(), OIConstants.kDriveDeadband), false, true);
+    } else if (driverXbox.povDown().getAsBoolean()) {
+      driveSubsystem.drive(-0.2, 0, -MathUtil.applyDeadband(driverXbox.getRightX(), OIConstants.kDriveDeadband), false, true);
+    } else if (driverXbox.povUpLeft().getAsBoolean()) {
+      driveSubsystem.drive(.14, .14, -MathUtil.applyDeadband(driverXbox.getRightX(), OIConstants.kDriveDeadband), false, true);
+    } else if (driverXbox.povUpRight().getAsBoolean()) {
+      driveSubsystem.drive(.14, -.14, -MathUtil.applyDeadband(driverXbox.getRightX(), OIConstants.kDriveDeadband), false, true);
+    } else if (driverXbox.povDownLeft().getAsBoolean()) {
+      driveSubsystem.drive(-.14, .14, -MathUtil.applyDeadband(driverXbox.getRightX(), OIConstants.kDriveDeadband), false, true);
+    } else if (driverXbox.povDownRight().getAsBoolean()) {
+      driveSubsystem.drive(-.14, -.14, -MathUtil.applyDeadband(driverXbox.getRightX(), OIConstants.kDriveDeadband), false, true);
+    } else {
+      double yMovement = driverXbox.getLeftY();
+      double xMovement = driverXbox.getLeftX();
+      // The left stick controls translation of the robot.
+      // Turning is controlled by the X axis of the right stick.
+      this.driveSubsystem.drive(
+          -MathUtil.applyDeadband((yMovement > 0 ? 1 : -1) * Math.pow(yMovement, 2), OIConstants.kDriveDeadband),
+          -MathUtil.applyDeadband((xMovement > 0 ? 1 : -1) * Math.pow(xMovement, 2), OIConstants.kDriveDeadband),
+          -MathUtil.applyDeadband(driverXbox.getRightX(), OIConstants.kDriveDeadband),
+          false, true);
+    }
+  }
+  
+    @Override
+    public boolean isFinished()
+    {
+      return false;
+    }
+}
+
+
+  
