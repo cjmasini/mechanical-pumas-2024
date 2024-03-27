@@ -6,10 +6,12 @@ package frc.robot;
 
 
 import edu.wpi.first.wpilibj.Ultrasonic;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.swervedrive.launcher.AmpCommand;
 import frc.robot.commands.swervedrive.launcher.AutonomousCommand;
 import frc.robot.commands.swervedrive.launcher.CancelCommand;
@@ -20,8 +22,9 @@ import frc.robot.commands.swervedrive.launcher.RaiseCommand;
 import frc.robot.commands.swervedrive.launcher.ReverseCommand;
 import frc.robot.commands.swervedrive.launcher.SpeakerCommand;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.launcher.LauncherSubsystem;
+import frc.robot.subsystems.LauncherSubsystem;
 import java.util.function.DoubleSupplier;
+import com.pathplanner.lib.auto.AutoBuilder;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very
@@ -30,10 +33,6 @@ import java.util.function.DoubleSupplier;
  */
 public class RobotContainer
 {
-  private static final int PING_CHANNEL = 0;
-
-  private static final int ECHO_CHANNEL = 1;
-
   // The robot's subsystems and commands are defined here
   // private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
   //                                                                        "swerve/neo"));
@@ -45,7 +44,9 @@ public class RobotContainer
   
   private final CommandXboxController driverXbox = new CommandXboxController(0);
 
-  private final Ultrasonic ultrasonicSensor = new Ultrasonic(PING_CHANNEL, ECHO_CHANNEL);
+  private final Ultrasonic ultrasonicSensor = new Ultrasonic(DriveConstants.ultrasonicPingChannel, DriveConstants.ultrasonicEchoChannel);
+
+  private final SendableChooser<Command> autoChooser;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -85,10 +86,17 @@ public class RobotContainer
 
     InstantCommand resetGyro = new InstantCommand(() -> this.drivetrain.zeroHeading());
     driverXbox.rightStick().onTrue(resetGyro);
+
+    autoChooser = AutoBuilder.buildAutoChooser("Center Note Score");
+    SmartDashboard.putData("Auto Chooser", autoChooser);
+
   }
   
-  public Command getAutonomousCommand() {
-    
+  public Command getAutonomousCommandOld() {
       return new AutonomousCommand(this.drivetrain);
+  }
+
+  public Command getAutonomousCommand() {
+    return this.autoChooser.getSelected();
   }
 }

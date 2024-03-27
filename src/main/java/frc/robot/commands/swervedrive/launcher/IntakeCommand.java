@@ -1,7 +1,8 @@
 package frc.robot.commands.swervedrive.launcher;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.launcher.LauncherSubsystem;
+import frc.robot.subsystems.LauncherSubsystem;
+
 import java.util.function.DoubleSupplier;
 
 /**
