@@ -10,17 +10,22 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.swervedrive.launcher.AmpCommand;
 import frc.robot.commands.swervedrive.launcher.AutonomousCommand;
 import frc.robot.commands.swervedrive.launcher.CancelCommand;
 import frc.robot.commands.swervedrive.launcher.IntakeCommand;
+import frc.robot.commands.swervedrive.launcher.LockOrientationCommand;
 import frc.robot.commands.swervedrive.launcher.LowerCommand;
 import frc.robot.commands.swervedrive.launcher.MoveCommand;
 import frc.robot.commands.swervedrive.launcher.RaiseCommand;
 import frc.robot.commands.swervedrive.launcher.ReverseCommand;
 import frc.robot.commands.swervedrive.launcher.SpeakerCommand;
+import frc.robot.commands.swervedrive.launcher.LockOrientationCommand.Direction;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.launcher.LauncherSubsystem;
+
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 /**
@@ -38,7 +43,7 @@ public class RobotContainer
   // private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
   //                                                                        "swerve/neo"));
 
-  private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+  private final DriveSubsystem drivetrain = new DriveSubsystem();
 
   // The robot's shooter and intake mechanisms are defined here
   private final LauncherSubsystem launcherSubsystem = new LauncherSubsystem();
@@ -52,9 +57,11 @@ public class RobotContainer
    */
   public RobotContainer()
   {
-    System.out.println("In robot container");
     DoubleSupplier ultrasonicDistance = () -> this.ultrasonicSensor.getRangeMM();
 
+    MoveCommand moveCommand = new MoveCommand(this.drivetrain, driverXbox);
+    drivetrain.setDefaultCommand(moveCommand);
+    
     IntakeCommand intakeCommand = new IntakeCommand(launcherSubsystem, ultrasonicDistance);
     driverXbox.rightBumper().onTrue(intakeCommand.withTimeout(10));
 
@@ -62,31 +69,31 @@ public class RobotContainer
     SmartDashboard.putNumber("launchSpeed", launchSpeed);
     AmpCommand ampCommand = new AmpCommand(launcherSubsystem, launchSpeed);
     driverXbox.leftBumper().onTrue(ampCommand.withTimeout(10));
-
+    
     LowerCommand lowerCommand = new LowerCommand(launcherSubsystem);
-    driverXbox.a().onTrue(lowerCommand.withTimeout(10));
+    driverXbox.a().and(driverXbox.rightTrigger().negate()).onTrue(lowerCommand.withTimeout(10));
 
     RaiseCommand raiseCommand = new RaiseCommand(launcherSubsystem);
-    driverXbox.x().onTrue(raiseCommand.withTimeout(10));
+    driverXbox.x().and(driverXbox.rightTrigger().negate()).onTrue(raiseCommand.withTimeout(10));
 
+    ReverseCommand reverseCommand = new ReverseCommand(launcherSubsystem);
+    driverXbox.b().and(driverXbox.rightTrigger().negate()).onTrue(reverseCommand.withTimeout(10));
+
+    InstantCommand toggleFieldReletive = new InstantCommand(() -> moveCommand.toggleFieldReletive());
+    driverXbox.y().and(driverXbox.rightTrigger().negate()).onTrue(toggleFieldReletive);
+    
     SpeakerCommand speakerCommand = new SpeakerCommand(launcherSubsystem);
     driverXbox.leftTrigger().onTrue(speakerCommand.withTimeout(10));
 
     CancelCommand cancelCommand = new CancelCommand(launcherSubsystem, ultrasonicDistance);
     driverXbox.rightTrigger().onTrue(cancelCommand.withTimeout(10));
 
-    ReverseCommand reverseCommand = new ReverseCommand(launcherSubsystem);
-    driverXbox.b().onTrue(reverseCommand.withTimeout(10));
-
-     MoveCommand moveCommand = new MoveCommand(m_robotDrive, driverXbox);
-     m_robotDrive.setDefaultCommand(moveCommand);
-
-     InstantCommand toggleFieldReletive = new InstantCommand(() -> moveCommand.toggleFieldReletive());
-     driverXbox.y().onTrue(toggleFieldReletive);
+    InstantCommand resetGyro = new InstantCommand(() -> this.drivetrain.zeroHeading());
+    driverXbox.rightStick().onTrue(resetGyro);
   }
   
   public Command getAutonomousCommand() {
     
-      return new AutonomousCommand(m_robotDrive);
+      return new AutonomousCommand(this.drivetrain);
   }
 }

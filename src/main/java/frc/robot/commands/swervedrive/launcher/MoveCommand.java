@@ -5,16 +5,18 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.DriveSubsystem.Direction;
 
 /**
  * Command for note intake
  */
 public class MoveCommand extends Command 
 {
-
   private CommandXboxController driverXbox;
   private DriveSubsystem driveSubsystem;
   private boolean fieldRelative = true;
+  // private boolean matchesDirection = false;
+
 
   /**
    * Command for intaking notes
@@ -48,15 +50,43 @@ public class MoveCommand extends Command
     } else if (driverXbox.povDownRight().getAsBoolean()) {
       driveSubsystem.drive(-.14, -.14, -MathUtil.applyDeadband(driverXbox.getRightX(), OIConstants.kDriveDeadband), fieldRelative, true);
     } else {
-      double yMovement = driverXbox.getLeftY();
-      double xMovement = driverXbox.getLeftX();
+
+    double yMovement = driverXbox.getLeftY();
+    double xMovement = driverXbox.getLeftX();
+
+    if(driverXbox.rightTrigger().getAsBoolean() && driverXbox.b().getAsBoolean()) {
+      this.driveSubsystem.driveAndRotateToDirection(
+          -MathUtil.applyDeadband((yMovement > 0 ? 1 : -1) * Math.pow(yMovement, 2), OIConstants.kDriveDeadband),
+          -MathUtil.applyDeadband((xMovement > 0 ? 1 : -1) * Math.pow(xMovement, 2), OIConstants.kDriveDeadband),
+          Direction.RIGHT,
+           true);
+    } else if(driverXbox.rightTrigger().getAsBoolean() && driverXbox.a().getAsBoolean()) {
+      this.driveSubsystem.driveAndRotateToDirection(
+          -MathUtil.applyDeadband((yMovement > 0 ? 1 : -1) * Math.pow(yMovement, 2), OIConstants.kDriveDeadband),
+          -MathUtil.applyDeadband((xMovement > 0 ? 1 : -1) * Math.pow(xMovement, 2), OIConstants.kDriveDeadband),
+          Direction.BACKWARD,
+           true);
+    } else if(driverXbox.rightTrigger().getAsBoolean() && driverXbox.x().getAsBoolean()) {
+      this.driveSubsystem.driveAndRotateToDirection(
+          -MathUtil.applyDeadband((yMovement > 0 ? 1 : -1) * Math.pow(yMovement, 2), OIConstants.kDriveDeadband),
+          -MathUtil.applyDeadband((xMovement > 0 ? 1 : -1) * Math.pow(xMovement, 2), OIConstants.kDriveDeadband),
+          Direction.LEFT,
+           true);
+    } else if(driverXbox.rightTrigger().getAsBoolean() && driverXbox.y().getAsBoolean()) {
+      this.driveSubsystem.driveAndRotateToDirection(
+          -MathUtil.applyDeadband((yMovement > 0 ? 1 : -1) * Math.pow(yMovement, 2), OIConstants.kDriveDeadband),
+          -MathUtil.applyDeadband((xMovement > 0 ? 1 : -1) * Math.pow(xMovement, 2), OIConstants.kDriveDeadband),
+          Direction.FORWARD,
+           true);
+    } else {
       // The left stick controls translation of the robot.
       // Turning is controlled by the X axis of the right stick.
       this.driveSubsystem.drive(
           -MathUtil.applyDeadband((yMovement > 0 ? 1 : -1) * Math.pow(yMovement, 2), OIConstants.kDriveDeadband),
           -MathUtil.applyDeadband((xMovement > 0 ? 1 : -1) * Math.pow(xMovement, 2), OIConstants.kDriveDeadband),
           -MathUtil.applyDeadband(driverXbox.getRightX(), OIConstants.kDriveDeadband),
-          false, true);
+          fieldRelative, true);
+    }
     }
   }
   
@@ -73,7 +103,6 @@ public class MoveCommand extends Command
   public void toggleFieldReletive() {
     this.fieldRelative = !this.fieldRelative;
   }
-  
 }
 
 

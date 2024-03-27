@@ -5,6 +5,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -15,10 +16,19 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.WPIUtilJNI;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.OIConstants;
 import frc.robot.utils.SwerveUtils;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class DriveSubsystem extends SubsystemBase {
+  
+  public enum Direction {
+    FORWARD,
+    BACKWARD,
+    LEFT,
+    RIGHT
+  }
+
   // Create MAXSwerveModules
   private final MAXSwerveModule m_frontLeft = new MAXSwerveModule(
       DriveConstants.kFrontLeftDrivingCanId,
@@ -41,7 +51,7 @@ public class DriveSubsystem extends SubsystemBase {
       DriveConstants.kBackRightChassisAngularOffset);
 
   // The gyro sensor
-  private final Pigeon2 m_gyro = new Pigeon2(20);
+  private final Pigeon2 m_gyro = new Pigeon2(DriveConstants.pigeonGyroCanId);
 
   // Slew rate filter variables for controlling lateral acceleration
   private double m_currentRotation = 0.0;
@@ -106,8 +116,22 @@ public class DriveSubsystem extends SubsystemBase {
         pose);
   }
 
-  public void driveLeft() {
-    this.drive(0, .4, 0, true, true);
+  public void driveAndRotateToDirection(double xSpeed, double ySpeed, Direction direction, boolean rateLimit) {
+    double angle = convertToSmallAngle(this.getHeading());
+    boolean matchesDirection = false;
+
+    if (this.matchesDirectionWithinTolerance(angle, direction)){
+      matchesDirection = true;
+    }
+    // The left stick controls translation of the robot.
+    // Automatically turn to face the supplied direction
+    System.out.println("Matches within tolerance: " + this.matchesDirectionWithinTolerance(angle, Direction.FORWARD)); 
+    System.out.println("Speed: "+ (this.matchesDirectionWithinTolerance(angle, Direction.FORWARD) ? 0 : calculateAngularSpeed(angle, direction)));
+    this.drive(
+        ySpeed,
+        xSpeed,
+        (this.matchesDirectionWithinTolerance(angle, direction) ? 0 : calculateAngularSpeed(angle, direction)),//(angle > 0 ? -.5 : .5),
+        true, true);
   }
 
   /**
@@ -248,5 +272,51 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public double getTurnRate() {
     return m_gyro.getRate() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
+  }
+
+  private double convertToSmallAngle(double angle) {
+    while(angle > 180) {
+      angle -= 360;
+    }
+    while (angle < -180) {
+      angle += 360;
+    }
+    return angle;
+  }
+
+  private boolean matchesDirectionWithinTolerance(double angle, Direction direction) {
+    double desiredAngle = calculateDesiredAngle(angle, direction);
+    return desiredAngle + DriveConstants.DRIVE_AND_ORIENT_ANGLE_TOLERANCE > angle && desiredAngle - DriveConstants.DRIVE_AND_ORIENT_ANGLE_TOLERANCE <= angle;
+  }
+
+  private double calculateAngularSpeed(double angle, Direction direction) {
+    // Scale down speed when we get closer to the target angle
+    double calculatedSpeed = -1*(angle-calculateDesiredAngle(angle, direction))/180; 
+    // Calculate sign of desired speed
+    double sign = calculatedSpeed > 0 ? 1 : -1;
+    // Between 10% and 30% calculated speed, set speed to 30%
+    // When less than 10% calculated speed, set speed to 10% to prevent overshooting
+    return sign*calculatedSpeed > .3 ? calculatedSpeed : (sign*calculatedSpeed >.1 ? sign*.3 : sign*.1);
+  }
+
+  private double calculateDesiredAngle(double angle, Direction direction) {
+    double desiredAngle = 0;
+    switch (direction) {
+      case FORWARD:
+        desiredAngle = 0;
+        break;
+      case LEFT:
+        desiredAngle = 90;
+        break;
+      case RIGHT:
+        desiredAngle = -90;
+        break;
+      case BACKWARD:
+        desiredAngle = 180;
+        angle = angle < 0 ? angle : angle + 360;
+        break;
+    }
+    System.out.println("Desired angle: " + desiredAngle);
+    return desiredAngle;
   }
 }

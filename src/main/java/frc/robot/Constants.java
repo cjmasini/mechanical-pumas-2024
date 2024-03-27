@@ -65,6 +65,9 @@ public final class Constants
     public static final double kMagnitudeSlewRate = 1.8; // percent per second (1 = 100%)
     public static final double kRotationalSlewRate = 2.0; // percent per second (1 = 100%)
 
+    // How close to straight to check for in drive and orient mode
+    public static final double DRIVE_AND_ORIENT_ANGLE_TOLERANCE = 2; // degrees 
+
     // Chassis configuration
     public static final double kTrackWidth = Units.inchesToMeters(26.5);
     // Distance between centers of right and left wheels on robot
@@ -95,6 +98,8 @@ public final class Constants
 
     public static final int kFrontRightTurningCanId = 4;
     public static final int kRearLeftTurningCanId = 6;
+
+    public static final int pigeonGyroCanId = 21;
 
     public static final boolean kGyroReversed = false;
   }
