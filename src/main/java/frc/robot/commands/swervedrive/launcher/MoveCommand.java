@@ -15,24 +15,23 @@ public class MoveCommand extends Command
   private CommandXboxController driverXbox;
   private DriveSubsystem driveSubsystem;
   private boolean fieldRelative = true;
-  // private boolean matchesDirection = false;
-
 
   /**
-   * Command for intaking notes
+   * Command for moving the robot using the swerve drive modules
    *
-   * @param launcher  The launcher subsystem.
-   * @param ultrasonicDistance Distance from sensor to note in mm
+   * @param drivetrain  The drive subsystem.
+   * @param driverXbox The xbox controller for the robot
    */
-  public MoveCommand(DriveSubsystem driveSubsystem, CommandXboxController driverXbox)
+  public MoveCommand(DriveSubsystem drivetrain, CommandXboxController driverXbox)
   {
-      this.driveSubsystem = driveSubsystem;
+      this.driveSubsystem = drivetrain;
       this.driverXbox = driverXbox;
       addRequirements(this.driveSubsystem);
   }
 
   @Override
   public void execute() {
+    // Trigger mappings for fine tuned adjustments using the d-pad
     if (driverXbox.povLeft().getAsBoolean()) {
       driveSubsystem.drive(0, .2, -MathUtil.applyDeadband(driverXbox.getRightX(), OIConstants.kDriveDeadband), fieldRelative, true);
     } else if (driverXbox.povRight().getAsBoolean()) {
@@ -50,10 +49,10 @@ public class MoveCommand extends Command
     } else if (driverXbox.povDownRight().getAsBoolean()) {
       driveSubsystem.drive(-.14, -.14, -MathUtil.applyDeadband(driverXbox.getRightX(), OIConstants.kDriveDeadband), fieldRelative, true);
     } else {
-
     double yMovement = driverXbox.getLeftY();
     double xMovement = driverXbox.getLeftX();
 
+    // Trigger mappings for driving while orienting to a supplied direction
     if(driverXbox.rightTrigger().getAsBoolean() && driverXbox.b().getAsBoolean()) {
       this.driveSubsystem.driveAndOrient(
           -MathUtil.applyDeadband((yMovement > 0 ? 1 : -1) * Math.pow(yMovement, 2), OIConstants.kDriveDeadband),
@@ -79,6 +78,7 @@ public class MoveCommand extends Command
           Direction.FORWARD,
            true);
     } else {
+      // Default joystick controlled swerve
       // The left stick controls translation of the robot.
       // Turning is controlled by the X axis of the right stick.
       this.driveSubsystem.drive(
