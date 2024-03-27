@@ -1,12 +1,6 @@
 {
   "version": 1.0,
-  "startingPose": {
-    "position": {
-      "x": 1.282954626977957,
-      "y": 5.566863856374023
-    },
-    "rotation": 0
-  },
+  "startingPose": null,
   "command": {
     "type": "sequential",
     "data": {
@@ -14,13 +8,19 @@
         {
           "type": "named",
           "data": {
-            "name": "SpeakerCommand"
+            "name": "zeroGyro"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "speakerCommand"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Note 1 Retrieval"
+            "pathName": "Note 1 Intake Positioning"
           }
         },
         {
@@ -32,7 +32,19 @@
         {
           "type": "path",
           "data": {
+            "pathName": "Note 1 Intake Process"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
             "pathName": "Note 1 Scoring"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "speakerCommand"
           }
         }
       ]

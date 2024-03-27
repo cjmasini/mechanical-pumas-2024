@@ -25,6 +25,7 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LauncherSubsystem;
 import java.util.function.DoubleSupplier;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very
@@ -87,13 +88,13 @@ public class RobotContainer
     InstantCommand resetGyro = new InstantCommand(() -> this.drivetrain.zeroHeading());
     driverXbox.rightStick().onTrue(resetGyro);
 
+    NamedCommands.registerCommand("zeroGyro", resetGyro);
+    NamedCommands.registerCommand("intakeCommand", intakeCommand.withTimeout(3));
+    NamedCommands.registerCommand("speakerCommand", speakerCommand.withTimeout(2));
+    
     autoChooser = AutoBuilder.buildAutoChooser("Center Note Score");
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
-  }
-  
-  public Command getAutonomousCommandOld() {
-      return new AutonomousCommand(this.drivetrain);
   }
 
   public Command getAutonomousCommand() {
