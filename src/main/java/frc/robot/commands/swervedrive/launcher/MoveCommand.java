@@ -55,25 +55,25 @@ public class MoveCommand extends Command
     double xMovement = driverXbox.getLeftX();
 
     if(driverXbox.rightTrigger().getAsBoolean() && driverXbox.b().getAsBoolean()) {
-      this.driveSubsystem.driveAndRotateToDirection(
+      this.driveSubsystem.driveAndOrient(
           -MathUtil.applyDeadband((yMovement > 0 ? 1 : -1) * Math.pow(yMovement, 2), OIConstants.kDriveDeadband),
           -MathUtil.applyDeadband((xMovement > 0 ? 1 : -1) * Math.pow(xMovement, 2), OIConstants.kDriveDeadband),
           Direction.RIGHT,
            true);
     } else if(driverXbox.rightTrigger().getAsBoolean() && driverXbox.a().getAsBoolean()) {
-      this.driveSubsystem.driveAndRotateToDirection(
+      this.driveSubsystem.driveAndOrient(
           -MathUtil.applyDeadband((yMovement > 0 ? 1 : -1) * Math.pow(yMovement, 2), OIConstants.kDriveDeadband),
           -MathUtil.applyDeadband((xMovement > 0 ? 1 : -1) * Math.pow(xMovement, 2), OIConstants.kDriveDeadband),
           Direction.BACKWARD,
            true);
     } else if(driverXbox.rightTrigger().getAsBoolean() && driverXbox.x().getAsBoolean()) {
-      this.driveSubsystem.driveAndRotateToDirection(
+      this.driveSubsystem.driveAndOrient(
           -MathUtil.applyDeadband((yMovement > 0 ? 1 : -1) * Math.pow(yMovement, 2), OIConstants.kDriveDeadband),
           -MathUtil.applyDeadband((xMovement > 0 ? 1 : -1) * Math.pow(xMovement, 2), OIConstants.kDriveDeadband),
           Direction.LEFT,
            true);
     } else if(driverXbox.rightTrigger().getAsBoolean() && driverXbox.y().getAsBoolean()) {
-      this.driveSubsystem.driveAndRotateToDirection(
+      this.driveSubsystem.driveAndOrient(
           -MathUtil.applyDeadband((yMovement > 0 ? 1 : -1) * Math.pow(yMovement, 2), OIConstants.kDriveDeadband),
           -MathUtil.applyDeadband((xMovement > 0 ? 1 : -1) * Math.pow(xMovement, 2), OIConstants.kDriveDeadband),
           Direction.FORWARD,

@@ -5,7 +5,6 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -16,7 +15,6 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.WPIUtilJNI;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.OIConstants;
 import frc.robot.utils.SwerveUtils;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -116,20 +114,15 @@ public class DriveSubsystem extends SubsystemBase {
         pose);
   }
 
-  public void driveAndRotateToDirection(double xSpeed, double ySpeed, Direction direction, boolean rateLimit) {
+  public void driveAndOrient(double xSpeed, double ySpeed, Direction direction, boolean rateLimit) {
     double angle = convertToSmallAngle(this.getHeading());
-    boolean matchesDirection = false;
-
-    if (this.matchesDirectionWithinTolerance(angle, direction)){
-      matchesDirection = true;
-    }
     // The left stick controls translation of the robot.
     // Automatically turn to face the supplied direction
     System.out.println("Matches within tolerance: " + this.matchesDirectionWithinTolerance(angle, Direction.FORWARD)); 
     System.out.println("Speed: "+ (this.matchesDirectionWithinTolerance(angle, Direction.FORWARD) ? 0 : calculateAngularSpeed(angle, direction)));
     this.drive(
-        ySpeed,
         xSpeed,
+        ySpeed,
         (this.matchesDirectionWithinTolerance(angle, direction) ? 0 : calculateAngularSpeed(angle, direction)),//(angle > 0 ? -.5 : .5),
         true, true);
   }
@@ -150,9 +143,6 @@ public class DriveSubsystem extends SubsystemBase {
 
     double xSpeedCommanded;
     double ySpeedCommanded;
-    // SmartDashboard.putNumber("xSpeed", xSpeedCommanded);
-    // SmartDashboard.putNumber("ySpeed", ySpeedCommanded);
-
 
     if (rateLimit) {
       // Convert XY to polar for rate limiting
