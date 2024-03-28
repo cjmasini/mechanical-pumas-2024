@@ -34,10 +34,6 @@ import com.pathplanner.lib.auto.NamedCommands;
  */
 public class RobotContainer
 {
-  // The robot's subsystems and commands are defined here
-  // private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
-  //                                                                        "swerve/neo"));
-
   private final DriveSubsystem drivetrain = new DriveSubsystem();
 
   // The robot's shooter and intake mechanisms are defined here
@@ -89,15 +85,17 @@ public class RobotContainer
     driverXbox.rightStick().onTrue(resetGyro);
 
     NamedCommands.registerCommand("zeroGyro", resetGyro);
-    NamedCommands.registerCommand("intakeCommand", intakeCommand.withTimeout(3));
-    NamedCommands.registerCommand("speakerCommand", speakerCommand.withTimeout(2));
+    IntakeCommand autoIntakeCommand = new IntakeCommand(launcherSubsystem, ultrasonicDistance);
+    NamedCommands.registerCommand("intakeCommand", autoIntakeCommand.withTimeout(3));
+    SpeakerCommand autoSpeakerCommand = new SpeakerCommand(launcherSubsystem);
+    NamedCommands.registerCommand("speakerCommand", autoSpeakerCommand.withTimeout(2));
     
-    autoChooser = AutoBuilder.buildAutoChooser("Center Note Score");
+    this.autoChooser = AutoBuilder.buildAutoChooser("Center Note Score");
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
   }
 
   public Command getAutonomousCommand() {
-    return this.autoChooser.getSelected();
+    return new AutonomousCommand(drivetrain);
   }
 }

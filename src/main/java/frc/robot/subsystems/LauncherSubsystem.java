@@ -28,10 +28,13 @@ public class LauncherSubsystem extends SubsystemBase
   private static final int LOADER_CHANNEL_ID = 0;
 
   /**
-   * Launch Motor
+   * Launch Motors
    */
-  private final Spark launchMotor;
-  private static final int LAUNCH_CHANNEL_ID = 2;
+  private final Spark leftLaunchMotor;
+  private static final int LEFT_LAUNCH_CHANNEL_ID = 4;
+
+  private final Spark rightLaunchMotor;
+  private static final int RIGHT_LAUNCH_CHANNEL_ID = 5;
 
   /**
    * Left Elevator Motor 
@@ -39,7 +42,6 @@ public class LauncherSubsystem extends SubsystemBase
   private final Spark leftElevatorMotor;
   private static final int LEFT_ELEVATOR_CHANNEL_ID = 3;
   
-
   /**
    * Right Elevator Motor 
    */
@@ -64,8 +66,11 @@ public class LauncherSubsystem extends SubsystemBase
     this.loaderMotor = new Spark(LOADER_CHANNEL_ID);
     loaderMotor.setInverted(true);
 
-    this.launchMotor = new Spark(LAUNCH_CHANNEL_ID);
-    this.launchMotor.setInverted(false);
+    this.leftLaunchMotor = new Spark(LEFT_LAUNCH_CHANNEL_ID);
+    this.leftLaunchMotor.setInverted(false);
+
+    this.rightLaunchMotor = new Spark(RIGHT_LAUNCH_CHANNEL_ID);
+    this.rightLaunchMotor.setInverted(false);
 
     this.leftElevatorMotor = new Spark(LEFT_ELEVATOR_CHANNEL_ID);
     this.leftElevatorMotor.setInverted(true);
@@ -73,8 +78,6 @@ public class LauncherSubsystem extends SubsystemBase
     this.rightElevatorMotor = new Spark(RIGHT_ELEVATOR_CHANNEL_ID);
     this.rightElevatorMotor.setInverted(true);
   }
-
-
 
   public void setIntakeSpeed(double intakeSpeed){
     this.intakeMotor.set(intakeSpeed);
@@ -89,10 +92,11 @@ public class LauncherSubsystem extends SubsystemBase
     return this.loaderMotor.get();
   }
   public void setLaunchSpeed(double launchSpeed){
-    this.launchMotor.set(launchSpeed);
+    this.leftLaunchMotor.set(launchSpeed);
+    this.rightLaunchMotor.set(launchSpeed);
   }
   public double getLaunchSpeed(){
-    return this.launchMotor.get();
+    return this.leftLaunchMotor.get();
   }
   public void setLeftElevatorSpeed(double elevatorSpeed){
     this.leftElevatorMotor.set(elevatorSpeed);;
