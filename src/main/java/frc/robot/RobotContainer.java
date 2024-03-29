@@ -96,6 +96,6 @@ public class RobotContainer
   }
 
   public Command getAutonomousCommand() {
-    return new AutonomousCommand(drivetrain);
+    return new AutonomousCommand(drivetrain, launcherSubsystem);
   }
 }
