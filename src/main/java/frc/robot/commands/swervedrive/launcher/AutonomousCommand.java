@@ -1,54 +1,44 @@
 package frc.robot.commands.swervedrive.launcher;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.LauncherSubsystem;
 
 /**
  * Command for note intake
  */
-public class AutonomousCommand extends Command 
+public class AutonomousCommand extends SequentialCommandGroup 
 {
 
-  private final DriveSubsystem driveSubsystem;
+  private final DriveSubsystem drivetrain;
+  private final LauncherSubsystem launcher;
   
   /**
-   * Command for intaking notes
+   * Command for autonomous mode
    *
+   * @param drivetrain The drivetrain
    * @param launcher  The launcher subsystem.
-   * @param ultrasonicDistance Distance from sensor to note in mm
    */
-  public AutonomousCommand(DriveSubsystem driveSubsystem)
+  public AutonomousCommand(DriveSubsystem driveSubsystem, LauncherSubsystem launcher)
   {
-    this.driveSubsystem = driveSubsystem;
+    this.launcher = launcher;
+    this.drivetrain = driveSubsystem;
 
-    addRequirements(driveSubsystem);
-  }
+    Command zeroGyroCommand = new InstantCommand(() -> this.drivetrain.zeroHeading());
+    SpeakerCommand speakerCommand = new SpeakerCommand(launcher);
+    WaitCommand waitTwoSeconds = new WaitCommand(2);
+    CancelCommand cancelCommand = new CancelCommand(launcher);
+    Command moveForward1 = new RunCommand(() -> this.drivetrain.drive(.5, 0, 0, true, true), driveSubsystem).withTimeout(1);
+    IntakeCommand intakeCommand = new IntakeCommand(launcher, null);
+    Command moveForward2 = new RunCommand(() -> this.drivetrain.drive(.5, 0, 0, true, true), driveSubsystem).withTimeout(.5);
+    Command moveBackward = new RunCommand(() -> this.drivetrain.drive(-.5, 0, 0, true, true), driveSubsystem).withTimeout(1.5);
 
-  @Override
-  public void initialize()
-  {
-    this.driveSubsystem.drive(.03, 0, 0, true, true);
-  }
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute()
-  {
-      // TODO: Figure out timeout
-  }
-
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted)
-  {
-    this.driveSubsystem.drive(0, 0, 0, true, true);
-  }
-
-  // Returns
-  @Override
-  public boolean isFinished()
-  {
-    return true;
+    this.addCommands(zeroGyroCommand, speakerCommand, waitTwoSeconds, cancelCommand, moveForward1, intakeCommand, moveForward2, cancelCommand, moveBackward, speakerCommand, waitTwoSeconds, moveForward1);
+    addRequirements(launcher);
   }
 }
 
