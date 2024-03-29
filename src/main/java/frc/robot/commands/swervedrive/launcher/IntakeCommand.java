@@ -37,7 +37,8 @@ public class IntakeCommand extends Command
     System.out.print("Initializing");
     this.intakeFinished = false;
     this.launcher.setIntakeSpeed(0.5);
-    this.launcher.setLoaderSpeed(0.25);
+    this.launcher.setLoaderSpeed(0.5);
+    this.launcher.setAssistSpeed(0);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -60,6 +61,7 @@ public class IntakeCommand extends Command
     this.intakeFinished = true;
     this.launcher.setIntakeSpeed(0);
     this.launcher.setLoaderSpeed(0);
+    this.launcher.setAssistSpeed(0);
   }
 
   // Returns

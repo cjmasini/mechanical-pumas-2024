@@ -46,22 +46,20 @@ public class CancelCommand extends Command
   @Override
   public void initialize()
   {
-    // Run load and launch motors at low speed
+    // Set all motors to stop
     this.launcher.setIntakeSpeed(0);
     this.launcher.setLoaderSpeed(0);
+    this.launcher.setAssistSpeed(0);
     this.launcher.setLaunchSpeed(0);
-    this.launcher.setLeftElevatorSpeed(0);
-    this.launcher.setRightElevatorSpeed(0);
-    System.out.println(doubleSupplier.getAsDouble());
+    this.launcher.setElevatorSpeed(0);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute()
   {
-    // System.out.print("Distance measure: ");
-    // System.out.println(d.getAsDouble());
-      // TODO: Figure out timeout
+    System.out.print("Distance measure: ");
+    System.out.println(doubleSupplier.getAsDouble());
   }
 
   // Called once the command ends or is interrupted.
@@ -70,9 +68,9 @@ public class CancelCommand extends Command
   {
     this.launcher.setIntakeSpeed(0);
     this.launcher.setLoaderSpeed(0);
+    this.launcher.setAssistSpeed(0);
     this.launcher.setLaunchSpeed(0);
-    this.launcher.setLeftElevatorSpeed(0);
-    this.launcher.setRightElevatorSpeed(0);
+    this.launcher.setElevatorSpeed(0);
   }
 
   // Returns

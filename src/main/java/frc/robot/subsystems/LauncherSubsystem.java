@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.revrobotics.CANSparkLowLevel;
 import com.revrobotics.CANSparkMax;
 
@@ -27,14 +29,17 @@ public class LauncherSubsystem extends SubsystemBase
   private final Spark loaderMotor;
   private static final int LOADER_CHANNEL_ID = 0;
 
+  private final VictorSPX assistMotor;
+  private static final int ASSIST_CAN_ID = 52;
+
   /**
    * Launch Motors
    */
   private final Spark leftLaunchMotor;
-  private static final int LEFT_LAUNCH_CHANNEL_ID = 4;
+  private static final int LEFT_LAUNCH_CHANNEL_ID = 2;
 
   private final Spark rightLaunchMotor;
-  private static final int RIGHT_LAUNCH_CHANNEL_ID = 5;
+  private static final int RIGHT_LAUNCH_CHANNEL_ID = 4;
 
   /**
    * Left Elevator Motor 
@@ -66,11 +71,14 @@ public class LauncherSubsystem extends SubsystemBase
     this.loaderMotor = new Spark(LOADER_CHANNEL_ID);
     loaderMotor.setInverted(true);
 
+    this.assistMotor = new VictorSPX(ASSIST_CAN_ID);
+    assistMotor.setInverted(true);
+
     this.leftLaunchMotor = new Spark(LEFT_LAUNCH_CHANNEL_ID);
     this.leftLaunchMotor.setInverted(false);
 
     this.rightLaunchMotor = new Spark(RIGHT_LAUNCH_CHANNEL_ID);
-    this.rightLaunchMotor.setInverted(false);
+    this.rightLaunchMotor.setInverted(true);
 
     this.leftElevatorMotor = new Spark(LEFT_ELEVATOR_CHANNEL_ID);
     this.leftElevatorMotor.setInverted(true);
@@ -82,33 +90,19 @@ public class LauncherSubsystem extends SubsystemBase
   public void setIntakeSpeed(double intakeSpeed){
     this.intakeMotor.set(intakeSpeed);
   }
-  public double getIntakeSpeed(){
-    return this.intakeMotor.get();
-  }
   public void setLoaderSpeed(double loaderSpeed){
     this.loaderMotor.set(loaderSpeed);;
   }
-  public double getLoaderSpeed(){
-    return this.loaderMotor.get();
+  public void setAssistSpeed(double assistSpeed){
+    this.assistMotor.set(VictorSPXControlMode.PercentOutput, assistSpeed);
   }
   public void setLaunchSpeed(double launchSpeed){
     this.leftLaunchMotor.set(launchSpeed);
     this.rightLaunchMotor.set(launchSpeed);
   }
-  public double getLaunchSpeed(){
-    return this.leftLaunchMotor.get();
-  }
-  public void setLeftElevatorSpeed(double elevatorSpeed){
-    this.leftElevatorMotor.set(elevatorSpeed);;
-  }
-  public double getLeftElevatorSpeed(){
-    return this.leftElevatorMotor.get();
-  }
-  public void setRightElevatorSpeed(double elevatorSpeed){
-    this.rightElevatorMotor.set(elevatorSpeed);;
-  }
-  public double getRightElevatorSpeed(){
-    return this.rightElevatorMotor.get();
+  public void setElevatorSpeed(double elevatorSpeed){
+    this.rightElevatorMotor.set(elevatorSpeed);
+    this.leftElevatorMotor.set(elevatorSpeed);
   }
 
   @Override

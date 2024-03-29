@@ -30,8 +30,7 @@ public class LowerCommand extends Command
   {
     this.loweringFinished = false;
     // Run elevator motors at max speed
-    this.launcher.setLeftElevatorSpeed(-1);
-    this.launcher.setRightElevatorSpeed(-1);
+    this.launcher.setElevatorSpeed(-1);
     // this.withTimeout(2);
   }
 
@@ -46,8 +45,7 @@ public class LowerCommand extends Command
   public void end(boolean interrupted)
   {
     this.loweringFinished = true;
-    this.launcher.setLeftElevatorSpeed(0);
-    this.launcher.setRightElevatorSpeed(0);
+    this.launcher.setElevatorSpeed(0);
   }
 
   // Returns

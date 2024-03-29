@@ -25,9 +25,10 @@ public class SpeakerCommand extends SequentialCommandGroup
     this.launcher = launcher;
 
     Command setLaunchWheelSpeed = new InstantCommand(() -> this.launcher.setLaunchSpeed(1), launcher);
-    WaitCommand waitCommand = new WaitCommand(1);
-    Command setLoadWheelSpeed = new InstantCommand(() -> this.launcher.setLoaderSpeed(1), launcher);
-    this.addCommands(setLaunchWheelSpeed, waitCommand, setLoadWheelSpeed);
+    WaitCommand oneSecondWait = new WaitCommand(1);
+    InstantCommand setAssistWheelSpeed = new InstantCommand(() -> this.launcher.setAssistSpeed(.75));
+    Command setLoadWheelSpeed = new InstantCommand(() -> this.launcher.setLoaderSpeed(.5), launcher);
+    this.addCommands(setLaunchWheelSpeed, oneSecondWait, setAssistWheelSpeed, setLoadWheelSpeed);
     addRequirements(launcher);
   }
 }

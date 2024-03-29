@@ -30,16 +30,13 @@ public class RaiseCommand extends Command
   {
     this.raiseFinished = false;
     // Run elevator motors at max speed
-    this.launcher.setLeftElevatorSpeed(1);
-    this.launcher.setRightElevatorSpeed(1);
-    // this.withTimeout(2);
+    this.launcher.setElevatorSpeed(1);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute()
   {
-      // TODO: Figure out timeout
   }
 
   // Called once the command ends or is interrupted.
@@ -47,8 +44,7 @@ public class RaiseCommand extends Command
   public void end(boolean interrupted)
   {
     this.raiseFinished = true;
-    this.launcher.setLeftElevatorSpeed(0);
-    this.launcher.setRightElevatorSpeed(0);
+    this.launcher.setElevatorSpeed(0);
   }
 
   // Returns

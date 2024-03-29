@@ -60,14 +60,14 @@ public class RobotContainer
 
     double launchSpeed = .75;
     SmartDashboard.putNumber("launchSpeed", launchSpeed);
-    AmpCommand ampCommand = new AmpCommand(launcherSubsystem, launchSpeed);
+    AmpCommand ampCommand = new AmpCommand(launcherSubsystem);
     driverXbox.leftBumper().onTrue(ampCommand.withTimeout(10));
     
     LowerCommand lowerCommand = new LowerCommand(launcherSubsystem);
-    driverXbox.a().and(driverXbox.rightTrigger().negate()).onTrue(lowerCommand.withTimeout(10));
+    driverXbox.a().and(driverXbox.rightTrigger().negate()).onTrue(lowerCommand.withTimeout(30));
 
     RaiseCommand raiseCommand = new RaiseCommand(launcherSubsystem);
-    driverXbox.x().and(driverXbox.rightTrigger().negate()).onTrue(raiseCommand.withTimeout(10));
+    driverXbox.x().and(driverXbox.rightTrigger().negate()).onTrue(raiseCommand.withTimeout(30));
 
     ReverseCommand reverseCommand = new ReverseCommand(launcherSubsystem);
     driverXbox.b().and(driverXbox.rightTrigger().negate()).onTrue(reverseCommand.withTimeout(10));

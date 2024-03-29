@@ -31,6 +31,7 @@ public class ReverseCommand extends Command
     // Run load and launch motors at low speed
     this.launcher.setIntakeSpeed(-.25);
     this.launcher.setLoaderSpeed(-.25);
+    this.launcher.setAssistSpeed(-.25);
     this.launcher.setLaunchSpeed(-.75);
   }
 
