@@ -39,7 +39,7 @@ public class CancelCommand extends Command
   {
 
     this.launcher = launcher;
-    this.doubleSupplier = null;
+    this.doubleSupplier = () -> 0;
     addRequirements(launcher);
   }
 

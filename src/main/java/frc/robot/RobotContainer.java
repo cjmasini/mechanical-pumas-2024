@@ -6,7 +6,6 @@ package frc.robot;
 
 
 import edu.wpi.first.wpilibj.Ultrasonic;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -24,8 +23,6 @@ import frc.robot.commands.swervedrive.launcher.SpeakerCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LauncherSubsystem;
 import java.util.function.DoubleSupplier;
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.auto.NamedCommands;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very
@@ -43,7 +40,7 @@ public class RobotContainer
 
   private final Ultrasonic ultrasonicSensor = new Ultrasonic(DriveConstants.ultrasonicPingChannel, DriveConstants.ultrasonicEchoChannel);
 
-  private final SendableChooser<Command> autoChooser;
+  // private final SendableChooser<Command> autoChooser;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -84,18 +81,15 @@ public class RobotContainer
     InstantCommand resetGyro = new InstantCommand(() -> this.drivetrain.zeroHeading());
     driverXbox.rightStick().onTrue(resetGyro);
 
-    NamedCommands.registerCommand("zeroGyro", resetGyro);
-    IntakeCommand autoIntakeCommand = new IntakeCommand(launcherSubsystem, ultrasonicDistance);
-    NamedCommands.registerCommand("intakeCommand", autoIntakeCommand.withTimeout(3));
-    SpeakerCommand autoSpeakerCommand = new SpeakerCommand(launcherSubsystem);
-    NamedCommands.registerCommand("speakerCommand", autoSpeakerCommand.withTimeout(2));
     
-    this.autoChooser = AutoBuilder.buildAutoChooser("Center Note Score");
-    SmartDashboard.putData("Auto Chooser", autoChooser);
+    // this.autoChooser = AutoBuilder.buildAutoChooser("Center Note Score");
+    // SmartDashboard.putData("Auto Chooser", autoChooser);
 
   }
 
   public Command getAutonomousCommand() {
-    return new AutonomousCommand(drivetrain, launcherSubsystem);
+    int mode = 1;
+    SmartDashboard.putNumber("AutoMode", mode);
+    return new AutonomousCommand(drivetrain, launcherSubsystem, mode);
   }
 }
