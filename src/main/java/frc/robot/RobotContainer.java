@@ -88,7 +88,7 @@ public class RobotContainer
   }
 
   public Command getAutonomousCommand() {
-    int mode = 1;
+    int mode = 3;
     SmartDashboard.putNumber("AutoMode", mode);
     return new AutonomousCommand(drivetrain, launcherSubsystem, mode);
   }

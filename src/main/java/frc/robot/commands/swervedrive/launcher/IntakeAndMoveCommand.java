@@ -18,18 +18,17 @@ public class IntakeAndMoveCommand extends Command {
     public void initialize() {
         this.launcherSubsystem.setIntakeSpeed(.5);
         this.launcherSubsystem.setLoaderSpeed(.5);
+        this.drivetrain.drive(.5, 0, 0, true, true);
+
     } 
 
     @Override
     public void execute() {
-        this.drivetrain.drive(.5, 0, 0, true, true);
     }
 
     @Override
     public void end(boolean interrupted) {
         this.drivetrain.drive(0, 0, 0, true, true);
-        this.launcherSubsystem.setIntakeSpeed(0);
-        this.launcherSubsystem.setLoaderSpeed(0);
     }
 
     @Override
