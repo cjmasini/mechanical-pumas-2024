@@ -49,44 +49,44 @@ public class MoveCommand extends Command
     } else if (driverXbox.povDownRight().getAsBoolean()) {
       driveSubsystem.drive(-.14, -.14, -MathUtil.applyDeadband(driverXbox.getRightX(), OIConstants.kDriveDeadband), fieldRelative, true);
     } else {
-    double yMovement = driverXbox.getLeftY();
-    double xMovement = driverXbox.getLeftX();
+      double yMovement = driverXbox.getLeftY();
+      double xMovement = driverXbox.getLeftX();
 
-    // Trigger mappings for driving while orienting to a supplied direction
-    if(driverXbox.rightTrigger().getAsBoolean() && driverXbox.b().getAsBoolean()) {
-      this.driveSubsystem.driveAndOrient(
-          -MathUtil.applyDeadband((yMovement > 0 ? 1 : -1) * Math.pow(yMovement, 2), OIConstants.kDriveDeadband),
-          -MathUtil.applyDeadband((xMovement > 0 ? 1 : -1) * Math.pow(xMovement, 2), OIConstants.kDriveDeadband),
-          Direction.RIGHT,
-           true);
-    } else if(driverXbox.rightTrigger().getAsBoolean() && driverXbox.a().getAsBoolean()) {
-      this.driveSubsystem.driveAndOrient(
-          -MathUtil.applyDeadband((yMovement > 0 ? 1 : -1) * Math.pow(yMovement, 2), OIConstants.kDriveDeadband),
-          -MathUtil.applyDeadband((xMovement > 0 ? 1 : -1) * Math.pow(xMovement, 2), OIConstants.kDriveDeadband),
-          Direction.BACKWARD,
-           true);
-    } else if(driverXbox.rightTrigger().getAsBoolean() && driverXbox.x().getAsBoolean()) {
-      this.driveSubsystem.driveAndOrient(
-          -MathUtil.applyDeadband((yMovement > 0 ? 1 : -1) * Math.pow(yMovement, 2), OIConstants.kDriveDeadband),
-          -MathUtil.applyDeadband((xMovement > 0 ? 1 : -1) * Math.pow(xMovement, 2), OIConstants.kDriveDeadband),
-          Direction.LEFT,
-           true);
-    } else if(driverXbox.rightTrigger().getAsBoolean() && driverXbox.y().getAsBoolean()) {
-      this.driveSubsystem.driveAndOrient(
-          -MathUtil.applyDeadband((yMovement > 0 ? 1 : -1) * Math.pow(yMovement, 2), OIConstants.kDriveDeadband),
-          -MathUtil.applyDeadband((xMovement > 0 ? 1 : -1) * Math.pow(xMovement, 2), OIConstants.kDriveDeadband),
-          Direction.FORWARD,
-           true);
-    } else {
-      // Default joystick controlled swerve
-      // The left stick controls translation of the robot.
-      // Turning is controlled by the X axis of the right stick.
-      this.driveSubsystem.drive(
-          -MathUtil.applyDeadband((yMovement > 0 ? 1 : -1) * Math.pow(yMovement, 2), OIConstants.kDriveDeadband),
-          -MathUtil.applyDeadband((xMovement > 0 ? 1 : -1) * Math.pow(xMovement, 2), OIConstants.kDriveDeadband),
-          -MathUtil.applyDeadband(driverXbox.getRightX(), OIConstants.kDriveDeadband),
-          fieldRelative, true);
-    }
+      // Trigger mappings for driving while orienting to a supplied direction
+      if(driverXbox.rightTrigger().getAsBoolean() && driverXbox.b().getAsBoolean()) {
+        this.driveSubsystem.driveAndOrient(
+            -MathUtil.applyDeadband((yMovement > 0 ? 1 : -1) * Math.pow(yMovement, 3), OIConstants.kDriveDeadband),
+            -MathUtil.applyDeadband((xMovement > 0 ? 1 : -1) * Math.pow(xMovement, 3), OIConstants.kDriveDeadband),
+            Direction.RIGHT,
+             true);
+      } else if(driverXbox.rightTrigger().getAsBoolean() && driverXbox.a().getAsBoolean()) {
+        this.driveSubsystem.driveAndOrient(
+            -MathUtil.applyDeadband(Math.pow(yMovement, 3), OIConstants.kDriveDeadband),
+            -MathUtil.applyDeadband(Math.pow(xMovement, 3), OIConstants.kDriveDeadband),
+            Direction.BACKWARD,
+             true);
+      } else if(driverXbox.rightTrigger().getAsBoolean() && driverXbox.x().getAsBoolean()) {
+        this.driveSubsystem.driveAndOrient(
+            -MathUtil.applyDeadband(Math.pow(yMovement, 3), OIConstants.kDriveDeadband),
+            -MathUtil.applyDeadband(Math.pow(xMovement, 3), OIConstants.kDriveDeadband),
+            Direction.LEFT,
+             true);
+      } else if(driverXbox.rightTrigger().getAsBoolean() && driverXbox.y().getAsBoolean()) {
+        this.driveSubsystem.driveAndOrient(
+            -MathUtil.applyDeadband(Math.pow(yMovement, 3), OIConstants.kDriveDeadband),
+            -MathUtil.applyDeadband(Math.pow(xMovement, 3), OIConstants.kDriveDeadband),
+            Direction.FORWARD,
+             true);
+      } else {
+        // Default joystick controlled swerve
+        // The left stick controls translation of the robot.
+        // Turning is controlled by the X axis of the right stick.
+        this.driveSubsystem.drive(
+            -MathUtil.applyDeadband(Math.pow(yMovement, 3), OIConstants.kDriveDeadband),
+            -MathUtil.applyDeadband(Math.pow(xMovement, 3), OIConstants.kDriveDeadband),
+            -MathUtil.applyDeadband(driverXbox.getRightX(), OIConstants.kDriveDeadband),
+            fieldRelative, true);
+      }
     }
   }
   
@@ -104,6 +104,3 @@ public class MoveCommand extends Command
     this.fieldRelative = !this.fieldRelative;
   }
 }
-
-
-  
