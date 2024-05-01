@@ -112,8 +112,8 @@ public class DriveSubsystem extends SubsystemBase {
             this // Reference to this subsystem to set requirements
     );
 
-    orientationController = new PIDController(0, 0, 0); // TODO: Need to tune p, i and d
-    orientationController.enableContinuousInput(-Math.PI, Math.PI);
+    orientationController = new PIDController(0.01, 0, 0); // TODO: Need to tune p, i and d
+    orientationController.enableContinuousInput(-180, 180);
   }
 
   @Override
@@ -164,7 +164,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @param rateLimit     Whether to enable rate limiting for smoother control.
    */
   public void driveAndOrient(double xSpeed, double ySpeed, Direction direction, boolean rateLimit) {
-    this.driveAndOrient(xSpeed, ySpeed, this.convertToSmallAngle(this.calculateDesiredAngle(direction), rateLimit);
+    this.driveAndOrient(xSpeed, ySpeed, this.convertToSmallAngle(this.calculateDesiredAngle(direction, this.convertToSmallAngle(this.getHeading()))), rateLimit);
   }
 
     /**
@@ -175,9 +175,9 @@ public class DriveSubsystem extends SubsystemBase {
    * @param targetHeading     Target heading (angle) robot should face
    * @param rateLimit         Whether to enable rate limiting for smoother control.
    */
-  public void driveAndOrient(double xSpeed, double ySpeed, double targetHeading, boolean rateLimit) {
+  public void driveAndOrient(double xSpeed, double ySpeed, double target, boolean rateLimit) {
     double currentHeading = this.convertToSmallAngle(this.getHeading());
-    double targetHeading = this.convertToSmallAngle(targetHeading);
+    double targetHeading = this.convertToSmallAngle(target);
     
     // The left stick controls translation of the robot.
     // Automatically turn to face the supplied heading
@@ -411,7 +411,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @return boolean representing whether the angle matches the supplied direction
    */
   private boolean matchesDirectionWithinTolerance(double angle, Direction direction) {
-    double desiredAngle = calculateDesiredAngle(direction);
+    double desiredAngle = calculateDesiredAngle(direction, angle);
     return desiredAngle + DriveConstants.DRIVE_AND_ORIENT_ANGLE_TOLERANCE > angle && desiredAngle - DriveConstants.DRIVE_AND_ORIENT_ANGLE_TOLERANCE <= angle;
   }
 
@@ -441,6 +441,8 @@ public class DriveSubsystem extends SubsystemBase {
    * @return The angular velocity required to rotate the robot to the desired heading
    */
   private double calculatePIDAngularVelocity(double currentHeading, double targetHeading) {
+    double speed = this.orientationController.calculate(currentHeading, targetHeading);
+    System.out.println("Heading: " + currentHeading + " Target: " + targetHeading + " Speed: " + speed);
     return this.orientationController.calculate(currentHeading, targetHeading);
   }
 
@@ -451,7 +453,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @param direction The direction the robot should face
    * @return The angle corresponding to the desired direction
    */
-  private double calculateDesiredAngle(Direction direction) {
+  private double calculateDesiredAngle(Direction direction, double angle) {
     double desiredAngle = 0;
     switch (direction) {
       case FORWARD:

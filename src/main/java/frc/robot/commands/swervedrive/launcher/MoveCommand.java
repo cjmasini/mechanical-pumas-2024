@@ -16,6 +16,7 @@ public class MoveCommand extends Command
   private DriveSubsystem driveSubsystem;
   private boolean fieldRelative = true;
 
+  private static final double SPEED_REGULATOR = .25; 
   /**
    * Command for moving the robot using the swerve drive modules
    *
@@ -33,48 +34,48 @@ public class MoveCommand extends Command
   public void execute() {
     // Trigger mappings for fine tuned adjustments using the d-pad
     if (driverXbox.povLeft().getAsBoolean()) {
-      driveSubsystem.drive(0, .2, -MathUtil.applyDeadband(driverXbox.getRightX(), OIConstants.kDriveDeadband), fieldRelative, true);
+      driveSubsystem.drive(0, .2, -MathUtil.applyDeadband(driverXbox.getRightX(), OIConstants.kDriveDeadband), false, true);
     } else if (driverXbox.povRight().getAsBoolean()) {
-      driveSubsystem.drive(0, -.2, -MathUtil.applyDeadband(driverXbox.getRightX(), OIConstants.kDriveDeadband), fieldRelative, true);
+      driveSubsystem.drive(0, -.2, -MathUtil.applyDeadband(driverXbox.getRightX(), OIConstants.kDriveDeadband), false, true);
     } else if (driverXbox.povUp().getAsBoolean()) {
-      driveSubsystem.drive(.2, 0, -MathUtil.applyDeadband(driverXbox.getRightX(), OIConstants.kDriveDeadband), fieldRelative, true);
+      driveSubsystem.drive(.2, 0, -MathUtil.applyDeadband(driverXbox.getRightX(), OIConstants.kDriveDeadband), false, true);
     } else if (driverXbox.povDown().getAsBoolean()) {
-      driveSubsystem.drive(-0.2, 0, -MathUtil.applyDeadband(driverXbox.getRightX(), OIConstants.kDriveDeadband), fieldRelative, true);
+      driveSubsystem.drive(-0.2, 0, -MathUtil.applyDeadband(driverXbox.getRightX(), OIConstants.kDriveDeadband), false, true);
     } else if (driverXbox.povUpLeft().getAsBoolean()) {
-      driveSubsystem.drive(.14, .14, -MathUtil.applyDeadband(driverXbox.getRightX(), OIConstants.kDriveDeadband), fieldRelative, true);
+      driveSubsystem.drive(.14, .14, -MathUtil.applyDeadband(driverXbox.getRightX(), OIConstants.kDriveDeadband), false, true);
     } else if (driverXbox.povUpRight().getAsBoolean()) {
-      driveSubsystem.drive(.14, -.14, -MathUtil.applyDeadband(driverXbox.getRightX(), OIConstants.kDriveDeadband), fieldRelative, true);
+      driveSubsystem.drive(.14, -.14, -MathUtil.applyDeadband(driverXbox.getRightX(), OIConstants.kDriveDeadband), false, true);
     } else if (driverXbox.povDownLeft().getAsBoolean()) {
-      driveSubsystem.drive(-.14, .14, -MathUtil.applyDeadband(driverXbox.getRightX(), OIConstants.kDriveDeadband), fieldRelative, true);
+      driveSubsystem.drive(-.14, .14, -MathUtil.applyDeadband(driverXbox.getRightX(), OIConstants.kDriveDeadband), false, true);
     } else if (driverXbox.povDownRight().getAsBoolean()) {
-      driveSubsystem.drive(-.14, -.14, -MathUtil.applyDeadband(driverXbox.getRightX(), OIConstants.kDriveDeadband), fieldRelative, true);
+      driveSubsystem.drive(-.14, -.14, -MathUtil.applyDeadband(driverXbox.getRightX(), OIConstants.kDriveDeadband), false, true);
     } else {
       double yMovement = driverXbox.getLeftY();
       double xMovement = driverXbox.getLeftX();
 
       // Trigger mappings for driving while orienting to a supplied direction
-      if(driverXbox.rightTrigger().getAsBoolean() && driverXbox.b().getAsBoolean()) {
+      if(driverXbox.rightTrigger().getAsBoolean() && driverXbox.x().getAsBoolean()) {
         this.driveSubsystem.driveAndOrient(
-            -MathUtil.applyDeadband((yMovement > 0 ? 1 : -1) * Math.pow(yMovement, 3), OIConstants.kDriveDeadband),
-            -MathUtil.applyDeadband((xMovement > 0 ? 1 : -1) * Math.pow(xMovement, 3), OIConstants.kDriveDeadband),
+            -MathUtil.applyDeadband(SPEED_REGULATOR * Math.pow(yMovement, 3), OIConstants.kDriveDeadband),
+            -MathUtil.applyDeadband(SPEED_REGULATOR * Math.pow(xMovement, 3), OIConstants.kDriveDeadband),
             Direction.RIGHT,
-             true);
-      } else if(driverXbox.rightTrigger().getAsBoolean() && driverXbox.a().getAsBoolean()) {
-        this.driveSubsystem.driveAndOrient(
-            -MathUtil.applyDeadband(Math.pow(yMovement, 3), OIConstants.kDriveDeadband),
-            -MathUtil.applyDeadband(Math.pow(xMovement, 3), OIConstants.kDriveDeadband),
-            Direction.BACKWARD,
-             true);
-      } else if(driverXbox.rightTrigger().getAsBoolean() && driverXbox.x().getAsBoolean()) {
-        this.driveSubsystem.driveAndOrient(
-            -MathUtil.applyDeadband(Math.pow(yMovement, 3), OIConstants.kDriveDeadband),
-            -MathUtil.applyDeadband(Math.pow(xMovement, 3), OIConstants.kDriveDeadband),
-            Direction.LEFT,
              true);
       } else if(driverXbox.rightTrigger().getAsBoolean() && driverXbox.y().getAsBoolean()) {
         this.driveSubsystem.driveAndOrient(
-            -MathUtil.applyDeadband(Math.pow(yMovement, 3), OIConstants.kDriveDeadband),
-            -MathUtil.applyDeadband(Math.pow(xMovement, 3), OIConstants.kDriveDeadband),
+            -MathUtil.applyDeadband(SPEED_REGULATOR * Math.pow(yMovement, 3), OIConstants.kDriveDeadband),
+            -MathUtil.applyDeadband(SPEED_REGULATOR * Math.pow(xMovement, 3), OIConstants.kDriveDeadband),
+            Direction.BACKWARD,
+             true);
+      } else if(driverXbox.rightTrigger().getAsBoolean() && driverXbox.b().getAsBoolean()) {
+        this.driveSubsystem.driveAndOrient(
+            -MathUtil.applyDeadband(SPEED_REGULATOR * Math.pow(yMovement, 3), OIConstants.kDriveDeadband),
+            -MathUtil.applyDeadband(SPEED_REGULATOR * Math.pow(xMovement, 3), OIConstants.kDriveDeadband),
+            Direction.LEFT,
+             true);
+      } else if(driverXbox.rightTrigger().getAsBoolean() && driverXbox.a().getAsBoolean()) {
+        this.driveSubsystem.driveAndOrient(
+            -MathUtil.applyDeadband(SPEED_REGULATOR * Math.pow(yMovement, 3), OIConstants.kDriveDeadband),
+            -MathUtil.applyDeadband(SPEED_REGULATOR * Math.pow(xMovement, 3), OIConstants.kDriveDeadband),
             Direction.FORWARD,
              true);
       } else {
@@ -82,8 +83,8 @@ public class MoveCommand extends Command
         // The left stick controls translation of the robot.
         // Turning is controlled by the X axis of the right stick.
         this.driveSubsystem.drive(
-            -MathUtil.applyDeadband(Math.pow(yMovement, 3), OIConstants.kDriveDeadband),
-            -MathUtil.applyDeadband(Math.pow(xMovement, 3), OIConstants.kDriveDeadband),
+            -MathUtil.applyDeadband(SPEED_REGULATOR * Math.pow(yMovement, 3), OIConstants.kDriveDeadband),
+            -MathUtil.applyDeadband(SPEED_REGULATOR * Math.pow(xMovement, 3), OIConstants.kDriveDeadband),
             -MathUtil.applyDeadband(driverXbox.getRightX(), OIConstants.kDriveDeadband),
             fieldRelative, true);
       }

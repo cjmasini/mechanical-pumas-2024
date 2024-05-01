@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.CvSink;
+import edu.wpi.first.cscore.CvSource;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
@@ -45,6 +48,13 @@ public class Robot extends TimedRobot
   @Override
   public void robotInit()
   {
+       CameraServer.startAutomaticCapture();
+    // // Creates the CvSink and connects it to the UsbCamera
+    // CvSink cvSink = CameraServer.getVideo();
+
+    // // Creates the CvSource and MjpegServer [2] and connects them
+    // CvSource outputStream = CameraServer.putVideo("Blur", 640, 480);
+    
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     robotContainer = new RobotContainer();
